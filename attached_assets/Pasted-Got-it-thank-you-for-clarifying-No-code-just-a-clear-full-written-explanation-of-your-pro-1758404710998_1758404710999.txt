@@ -1,0 +1,147 @@
+Got it ✅ — thank you for clarifying! No code, just a **clear, full written explanation** of your project so you can copy and paste it or share it with others. Here’s the complete description of your **Lemur Gas Station AI Dashboard Project**:
+
+---
+
+# Lemur — Gas Station AI Management & Task Dashboard
+
+## Overview
+
+**Lemur** is an all-in-one AI-powered management dashboard designed to streamline gas station operations. It acts as a **central hub** where employees and managers can log in, receive tasks, record work, and access key tools (lottery, cigarette inventory, cooler checks, etc.).
+
+The system is built to **increase accountability, reduce downtime, and give managers control** while making the workflow simple for employees.
+
+---
+
+## Branding & Login
+
+* The dashboard is branded with the name **“Lemur”** at the top.
+* Employees log in using a simple **PIN system**.
+* Once logged in, the homepage shows large, easy-to-understand **tiles (buttons)** for different work areas.
+
+---
+
+## Main Dashboard Sections
+
+The **homepage** of Lemur contains several sections. Each section is represented as a **tile** that an employee can click to open a page.
+
+### 1. **Lottery**
+
+* Tile labeled **“Lottery”**.
+* Clicking it opens a page with a **pre-filled external link** (such as Modisoft).
+* Employees perform all lottery operations there.
+
+### 2. **LRTRI Cigarette Inventory**
+
+* Tile labeled **“Inventory”**.
+* Clicking it opens either:
+
+  * An **external link** to your LRTRI cigarette inventory system, OR
+  * A built-in page where cigarette stock is tracked.
+
+### 3. **Temperature Logs**
+
+* Tile labeled **“Coolers/Freezers.”**
+* Employees check and record temperatures every **3 hours**.
+* **AI rules:**
+
+  * If readings are in normal range → no change.
+  * If readings start to rise → checks become more frequent.
+  * If readings exceed safe limits → Lemur sends alerts to move items to backup storage.
+
+### 4. **Tasks**
+
+* Tile labeled **“Tasks.”**
+* Employees see their assigned work here.
+* **Features include:**
+
+  * **Common recurring tasks** (like cleaning or stocking).
+  * **Special tasks** (assigned by the manager).
+  * If a task is skipped, it reappears at the next login.
+  * Each task has **verification** — the next shift confirms whether it was done.
+  * Proof options: employees can add a **note** or a **photo upload**.
+
+### 5. **Custom Links (Manager Only)**
+
+* The manager can add **new tiles directly on the homepage.**
+* To add: just copy-paste a link (e.g., vendor site, HR docs, supply orders).
+* The tile instantly appears, and employees can click it to open that page.
+
+### 6. **Schedule**
+
+* A schedule section shows **who is on shift**.
+* Managers can upload a schedule (e.g., from Excel).
+* The AI cross-checks shifts with tasks and verifications.
+
+---
+
+## Task System
+
+Lemur keeps employees accountable by making tasks visible, tracked, and verified.
+
+* **Assignment**
+
+  * Employees get a **7-day rotation** of standard duties.
+  * Managers can assign **special one-time tasks.**
+
+* **Acknowledgement & Proof**
+
+  * Employees mark tasks “done.”
+  * Optional text note or photo proof can be attached.
+
+* **Verification**
+
+  * The **next shift worker** checks if the task was truly completed.
+  * If verified → task is closed.
+  * If failed → flagged, and the manager is alerted.
+
+* **AI Reminders**
+
+  * Missed tasks are carried forward to the next login.
+  * Alerts keep everyone on track.
+
+---
+
+## Alerts & AI Assistant
+
+The AI works like a **digital assistant manager**:
+
+* **Temperature alerts** if coolers/freezers get too warm.
+* **Task reminders** for missed work.
+* **Escalations** when critical issues aren’t fixed.
+* **Employee appreciation** tracking for recognition and motivation.
+
+---
+
+## Manager Tools
+
+Managers get a private **Admin section** where they can:
+
+* Add/edit employees.
+* Add **custom dashboard tiles** (by pasting links).
+* Upload shift schedules.
+* Assign or edit tasks.
+* View alerts and logs of employee actions.
+
+---
+
+## Long-Term Vision
+
+The first version of Lemur starts simple: **dashboard, tasks, inventory, lottery, and temperature checks.**
+Over time, it can expand to include:
+
+* Messaging or notifications to employees.
+* More advanced analytics.
+* Optional integrations with cameras or vendor systems.
+
+---
+
+✅ **In summary:** Lemur is a branded gas station dashboard that:
+
+* Keeps employees busy with assigned and verified tasks.
+* Tracks cooler/freezer temperatures with AI alerts.
+* Gives managers control through a customizable homepage.
+* Provides accountability and recognition for employees.
+
+---
+
+Would you like me to also create a **formal project document (PDF/Word)** version of this description, so you can share it with investors, partners, or staff?
