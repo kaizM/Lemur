@@ -1,0 +1,133 @@
+Got it 👍 Thanks for sharing the actual links. I’ll now rewrite the **full, final project description** with the correct Modisoft and Cigarette Inventory URLs included. No coding — just a clear detailed explanation.
+
+---
+
+# Lemur — Gas Station AI Management & Task Dashboard
+
+## Overview
+
+**Lemur** is a branded AI-powered dashboard designed to simplify gas station management. It provides employees with a **focused workspace** where they can only access the tools they need, while managers have a private control panel for scheduling, oversight, and customization.
+
+Employees log in with a **phone number/PIN**, see their assigned tasks, and can quickly access inventory and lottery systems. Managers use Lemur as a central hub for scheduling, task management, and monitoring store performance.
+
+---
+
+## Branding & Login
+
+* The dashboard is branded with the name **“Lemur”** at the top.
+* **Employees log in** using their phone number/PIN.
+* After login, employees are shown only the tools relevant to their daily work.
+* **Managers have private access** to scheduling, customization, and advanced features.
+
+---
+
+## Employee Dashboard (What Workers See)
+
+When employees log in, they see **four main sections**:
+
+1. **Lottery (Modisoft)**
+
+   * Tile labeled **“Lottery.”**
+   * Clicking opens the Modisoft lottery website:
+     👉 [https://modisoft.com](https://modisoft.com)
+
+2. **Cigarette Inventory**
+
+   * Tile labeled **“Inventory.”**
+   * Clicking opens the Cigarette Inventory system:
+     👉 [https://luxury-cajeta-636124.netlify.app](https://luxury-cajeta-636124.netlify.app)
+
+3. **Temperature Logs (Coolers & Freezers)**
+
+   * Tile labeled **“Coolers/Freezers.”**
+   * Employees record temperatures every **3 hours.**
+   * **AI rules:**
+
+     * Temps in normal range → standard 3-hour checks.
+     * Temps rising → checks become more frequent.
+     * Temps too hot → alerts are triggered to move stock to backup storage.
+
+4. **Tasks**
+
+   * Tile labeled **“Tasks.”**
+   * Shows assigned duties for that shift.
+   * **Task flow:**
+
+     * Employees complete tasks and mark them as done (optionally adding a note or photo).
+     * The **next shift verifies** whether the task was truly completed.
+     * If a task is missed, Lemur automatically carries it forward until it’s finished.
+
+---
+
+## Manager Dashboard (What Only You See)
+
+Managers have access to an **Admin section** not visible to employees:
+
+1. **Schedule (Private to Manager)**
+
+   * Upload and manage employee shift schedules.
+   * **Employees do not see schedules** — this is manager-only.
+
+2. **Custom Dashboard Links**
+
+   * Add new homepage tiles for employees.
+   * Example: “Vendor Orders,” “Training Portal,” or other business tools.
+   * Just paste a link, and it becomes available instantly.
+
+3. **Task Management**
+
+   * Assign one-time or recurring tasks.
+   * Monitor task completion and flagged items from verification.
+
+4. **Employee Management**
+
+   * Add/edit employee profiles.
+   * Update phone numbers/PINs.
+   * Set roles (employee or manager).
+
+5. **Alerts & Reporting**
+
+   * View alerts from cooler/freezer monitoring.
+   * Track task failures or missed duties.
+   * Access logs of employee activity.
+
+---
+
+## AI Assistant Role
+
+The AI inside Lemur functions like a **digital supervisor**:
+
+* Sends reminders for unfinished tasks.
+* Escalates when cooler/freezer temps are unsafe.
+* Carries incomplete tasks forward to the next shift.
+* Tracks employee reliability and performance for recognition.
+
+---
+
+## Long-Term Vision
+
+The **initial release** of Lemur focuses on:
+
+* Modisoft Lottery (via direct link)
+* Cigarette Inventory (via direct link)
+* Temperature logging with alerts
+* Task assignment and verification
+* Private scheduling and manager customization
+
+Future expansions could include:
+
+* Automatic SMS/email reminders for tasks and alerts.
+* Performance analytics and reporting dashboards.
+* Vendor integrations for ordering and supply management.
+
+---
+
+✅ **In summary:**
+
+* **Employees only see four tools:** Lottery, Cigarette Inventory, Temperature Logs, and Tasks.
+* **Managers control everything else** — schedules, new links, task assignment, and reporting.
+* Lemur keeps employees focused, accountable, and productive, while giving the manager total control.
+
+---
+
+Would you like me to now **format this as a professional PDF project proposal** (with sections, headers, and visuals) so you can hand it to developers or staff?

@@ -1,0 +1,238 @@
+Absolutely—here’s the **full, updated project spec** with the **AI features** and a **manager interface** to create **separate PINs for each employee** (so no one can access anyone else’s account). No code—just a clear blueprint you can hand to a developer or keep as your master plan.
+
+---
+
+# Lemur — Gas Station AI Management & Task Dashboard (Manager-First Spec)
+
+## 1) Overview
+
+**Lemur** is a branded, manager-led dashboard for your gas station. Employees log in with their **own unique PIN** and can only access:
+
+* **Lottery (Modisoft)** → [https://modisoft.com](https://modisoft.com)
+* **Cigarette Inventory (LRTRI)** → [https://luxury-cajeta-636124.netlify.app](https://luxury-cajeta-636124.netlify.app)
+* **Temperature Logs (Coolers/Freezers)**
+* **Tasks** (with cross-shift verification)
+
+**Managers** use a private admin area to: create users & PINs, add custom tiles, assign tasks, manage temperature rules/alerts, and view reports. **Schedules are manager-only** (employees never see them).
+
+---
+
+## 2) Branding & Access
+
+* Header branding: **“Lemur”**
+* **Employee login**: Phone number + **unique PIN**
+* **Manager login**: **Manager PIN = 786110** (full access)
+* Session auto-logout after idle (manager sets time)
+
+---
+
+## 3) Manager: User & PIN Creation (the interface you asked for)
+
+### A. “Users” Admin Screen (Manager-only)
+
+An in-app page where you **create & manage each employee**. It includes:
+
+**Create User form (fields you fill):**
+
+* **Full name** (e.g., Alicia Khan)
+* **Phone number** (used for identity & optional SMS later)
+* **Unique PIN** (4–6 digits; **must be unique**; only they can use it)
+* **Status** (Active / Suspended)
+* **Start date** (optional)
+* **Notes** (optional: store uniform size, preferred shift, etc.)
+
+**Role handling:**
+
+* You said you “don’t think so for roles”—so set **default** to *Employee* for everyone you create. Only you (with manager PIN 786110) have manager access.
+
+**User protections & policies:**
+
+* No two users may share a PIN.
+* PINs are confidential; manager can **reset** any PIN.
+* Employees can only see their own information and standard tiles (no schedule, no admin, no other people’s data).
+* **Audit trail:** create/edit/reset logged with timestamp and manager ID.
+
+**Bulk actions (optional, nice-to-have):**
+
+* **CSV import** to create many users at once: `name,phone,pin,status`
+* **Deactivate** (keep history but prevent login)
+
+---
+
+## 4) Employee Experience (what workers see after PIN login)
+
+* **Lottery (Modisoft)** → opens [https://modisoft.com](https://modisoft.com)
+* **Cigarette Inventory (LRTRI)** → opens [https://luxury-cajeta-636124.netlify.app](https://luxury-cajeta-636124.netlify.app)
+* **Temperature Logs** → record readings every 3 hours; app shows next-due times
+* **Tasks** → daily/weekly/common tasks and special tasks, with “Done” & cross-shift **Verify** steps; missed tasks carry forward
+
+> Employees **do not** see: Schedule, Admin, Reports, or any other staff’s data.
+
+---
+
+## 5) AI Features (manager-controlled)
+
+### A. AI Task Assistant
+
+* **Natural-language assignment** (manager can type or dictate):
+  “Assign Alicia to clean countertops before 10 AM daily and require a note.”
+  AI converts to a task with frequency, due window, and proof rule.
+* **Smart rotation (7-day)**
+  AI balances common tasks across the week and across staff (no one is idle).
+* **Carry-forward & reminders**
+  If a task isn’t completed, AI resurfaces it on the same employee’s next login.
+* **Cross-shift verification logic**
+  AI prompts the next on-shift person to verify prior shift tasks; “No” flags the task for you.
+* **Coaching nudges** (optional)
+  Friendly prompts like: “Quick check: trash bins at pumps?”
+* **Performance signals**
+  Summaries of who completes on time, who often needs reminders (for your recognition program).
+
+### B. AI Temperature Guardian
+
+* **Bands (editable):**
+
+  * ≤ **35°F** → Very Chill / OK
+  * > 35–40°F → Normal
+  * > 40–45°F → Watch
+  * > 45°F → Alert
+* **Escalations:**
+
+  * Any reading **≥ 50°F** → **Next check due in 20 minutes** (instead of 3 hours) until temps stabilize (two consecutive readings < 45°F).
+  * **Two consecutive readings ≥ 50°F** → **Critical Alert**: “Move stock to backup cooler/freezer now.”
+* **AI messages** (examples):
+
+  * “Freezer-1 at 51°F. Recheck in 20 minutes.”
+  * “Freezer-1 still ≥ 50°F twice. Move product now & call service.”
+* **Recovery tracking**: AI tracks trend until normal. Manager gets a “Resolved?” prompt.
+
+### C. AI Schedule Understanding (manager-only)
+
+* You can **upload a schedule** (Excel/CSV) or a **screenshot** (future enhancement).
+* AI reads who is scheduled and uses this to:
+
+  * route verification to the next shift
+  * identify gaps (optional)
+* **Important:** employees **never** see the schedule inside Lemur.
+
+### D. Voice to Action (optional)
+
+* Say: “Create special task for Jay: power-wash sidewalk this Friday at 2pm with photo proof.”
+* AI converts this to a scheduled task with proof requirement.
+
+---
+
+## 6) Temperature Logs — operational details
+
+* **Units setup (once):** e.g., Freezer-1, Cooler-Front, Ice-Cream-Box
+* **Default cadence:** every **3 hours**
+* **UI for employees:** list of units showing Last Reading, Status, and **Next Due**
+* **Entering a reading:** choose unit → enter °F → optional note → save
+* **What the AI does behind the scenes:**
+
+  * Calculates status band
+  * Adjusts next-due interval (normal vs 20-minute escalated)
+  * Triggers alerts and places an **unresolved alert card** in the **Manager Alerts Center**
+* **Compliance view (manager):** day grid showing on-time/late/missed entries
+
+---
+
+## 7) Tasks — operational details
+
+* **Templates** you (manager) define once:
+
+  * “Clean countertops” (daily, due by first hour, proof: note)
+  * “Bathroom deep clean” (every Tue/Thu, proof: note + optional photo)
+  * “Count cigarette packs” (weekly)
+* **Assignment types:**
+
+  * To a specific person
+  * To “anyone on shift”
+* **Employee flow:**
+
+  * Sees task → does it → taps **Done** (optionally adds note/photo)
+  * Next shift sees **Verify** → Yes/No (+ note)
+* **Flags & alerts:**
+
+  * “No” on verification → task **Flagged**; you see it in alerts/reports
+* **Carry-forward:**
+
+  * Missed tasks reappear automatically on next login
+
+---
+
+## 8) Manager Admin: what else you control
+
+* **Custom Tiles**
+
+  * Add homepage buttons by pasting any URL (e.g., vendor orders, training portal)
+  * Choose visibility: employees or manager-only
+* **Schedule (private)**
+
+  * Upload/manage; used by AI for routing verification; hidden from employees
+* **Alerts Center**
+
+  * See open/critical/resolved alerts with history and notes
+  * Mark resolved; add comments (e.g., “Service ticket #12345”)
+* **Reports & Exports**
+
+  * Tasks (on-time, late, missed, flagged)
+  * Temperatures (readings, escalations, resolution times)
+  * User activity (logins, acknowledgements, verifications)
+  * Export CSV for audits
+* **Security & Policies**
+
+  * Set idle timeout (auto-logout)
+  * Reset PINs
+  * Suspend/reactivate users
+
+---
+
+## 9) Data you should prepare (to fill the manager forms)
+
+* **Employee list**: Name, Phone, Unique PIN, Status
+* **Temperature units**: The actual coolers/freezers you own
+* **Task templates**: 10–15 common duties + any special ones
+* **Escalation SOP**: Who to call, where to move product, service vendor phone
+* **External links**: (already set) Modisoft & LRTRI + any others you want as tiles
+* **Schedule file** (optional now; useful later)
+
+---
+
+## 10) Daily flow (how it works in the store)
+
+1. **Employee logs in** with their **own PIN** → sees only **Lottery, Inventory, Temperature Logs, Tasks**
+2. **Temperature check** every 3 hours → AI adjusts intervals & alerts if needed
+3. **Tasks** performed → **Done**; next shift **verifies** → **Yes/No**
+4. **Manager** reviews **Alerts Center** & **Reports**; posts messages if needed
+5. **Missed/flagged** items carry into next day until completed/resolved
+
+---
+
+## 11) Policies you control (recommended defaults)
+
+* **PIN length**: 4–6 digits; **unique per person**
+* **Idle timeout**: 10–15 minutes on public store computers
+* **Proof rules**: Bathrooms & food-adjacent tasks require at least a text note
+* **Verification**: Required for all cleaning & stocking tasks
+* **Temperature critical**: Two ≥50°F readings → immediate move to backup + vendor call
+* **Privacy**: Only manager sees schedules and full reports
+
+---
+
+## 12) What’s “done” for this phase (acceptance criteria)
+
+* **Unique PIN accounts** created for every employee (via your Users admin screen)
+* Employees can only open the 4 tiles (no schedule/admin)
+* Temperature Logs enforce the 3-hour cadence, escalate at ≥50°F, and trigger alerts correctly
+* Tasks support Done + cross-shift Verify + carry-forward of missed items
+* Manager can add custom tiles, view alerts, and export reports
+* Manager PIN **786110** unlocks all admin features
+
+---
+
+If you’d like, I can also draft:
+
+* A **one-page “How to Use Lemur (Employee)”** you can print and post by the register
+* A **Manager Setup Checklist** (first-day and weekly)
+  Just say the word and I’ll write those up cleanly.

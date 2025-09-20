@@ -22,9 +22,9 @@ interface DashboardProps {
 
 export default function Dashboard({ userRole, userName, onLogout, onNavigate }: DashboardProps) {
   const [customTiles] = useState([
-    // Mock custom tiles that managers can add
-    { id: '1', title: 'Lottery System', url: 'https://modisoft.example.com', description: 'Daily lottery operations' },
-    { id: '2', title: 'LRTRI Inventory', url: 'https://lrtri.example.com', description: 'Cigarette stock system' }
+    // External system tiles that managers can customize
+    { id: '1', title: 'Lottery', url: 'https://modisoft.com', description: 'Modisoft lottery system' },
+    { id: '2', title: 'Inventory', url: 'https://luxury-cajeta-636124.netlify.app', description: 'Cigarette inventory tracking' }
   ]);
 
   const handleTileClick = (section: string) => {
@@ -34,8 +34,8 @@ export default function Dashboard({ userRole, userName, onLogout, onNavigate }: 
 
   const handleExternalLink = (url: string, title: string) => {
     console.log(`Opening external link: ${title} - ${url}`);
-    // In a real app, this would open the URL
-    alert(`Opening ${title}: ${url}`);
+    // Open external URL in new tab
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   const handleAddCustomTile = () => {
@@ -106,12 +106,15 @@ export default function Dashboard({ userRole, userName, onLogout, onNavigate }: 
             badge="Check due"
           />
           
-          <DashboardTile
-            title="Schedule"
-            icon={<Calendar size={40} />}
-            description="Shift schedules and coverage"
-            onClick={() => handleTileClick('schedule')}
-          />
+          {/* Schedule - Manager Only */}
+          {userRole === 'manager' && (
+            <DashboardTile
+              title="Schedule"
+              icon={<Calendar size={40} />}
+              description="Shift schedules and coverage"
+              onClick={() => handleTileClick('schedule')}
+            />
+          )}
 
           {/* External Link Tiles */}
           {customTiles.map((tile) => (

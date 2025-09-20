@@ -15,15 +15,21 @@ import {
   Trash2,
   Edit,
   ExternalLink,
-  UserPlus
+  UserPlus,
+  ClipboardList
 } from 'lucide-react';
 
 interface Employee {
   id: string;
   name: string;
+  phone: string;
   pin: string;
   role: 'employee' | 'manager';
   status: 'active' | 'inactive';
+  startDate: string;
+  notes?: string;
+  createdBy: string;
+  createdAt: string;
 }
 
 interface CustomTile {
@@ -38,15 +44,48 @@ interface ManagerPanelProps {
 }
 
 export default function ManagerPanel({ onClose }: ManagerPanelProps) {
-  const [employees] = useState<Employee[]>([
-    { id: '1', name: 'John Smith', pin: '1234', role: 'employee', status: 'active' },
-    { id: '2', name: 'Sarah Johnson', pin: '5678', role: 'employee', status: 'active' },
-    { id: '3', name: 'Mike Wilson', pin: '9012', role: 'employee', status: 'inactive' }
+  const [employees, setEmployees] = useState<Employee[]>([
+    { 
+      id: '1', 
+      name: 'John Smith', 
+      phone: '(555) 123-4567',
+      pin: '1234', 
+      role: 'employee', 
+      status: 'active',
+      startDate: '2024-01-15',
+      notes: 'Morning shift preferred',
+      createdBy: 'Manager Sarah',
+      createdAt: '2024-01-15 09:00 AM'
+    },
+    { 
+      id: '2', 
+      name: 'Sarah Johnson', 
+      phone: '(555) 234-5678',
+      pin: '5678', 
+      role: 'employee', 
+      status: 'active',
+      startDate: '2024-02-01',
+      notes: 'Excellent with customers',
+      createdBy: 'Manager Sarah',
+      createdAt: '2024-02-01 10:30 AM'
+    },
+    { 
+      id: '3', 
+      name: 'Mike Wilson', 
+      phone: '(555) 345-6789',
+      pin: '9012', 
+      role: 'employee', 
+      status: 'inactive',
+      startDate: '2024-01-08',
+      notes: 'Temporarily inactive - school',
+      createdBy: 'Manager Sarah',
+      createdAt: '2024-01-08 02:15 PM'
+    }
   ]);
 
   const [customTiles, setCustomTiles] = useState<CustomTile[]>([
-    { id: '1', title: 'Lottery System', url: 'https://modisoft.example.com', description: 'Daily lottery operations' },
-    { id: '2', title: 'LRTRI Inventory', url: 'https://lrtri.example.com', description: 'Cigarette stock system' }
+    { id: '1', title: 'Lottery', url: 'https://modisoft.com', description: 'Modisoft lottery system' },
+    { id: '2', title: 'Inventory', url: 'https://luxury-cajeta-636124.netlify.app', description: 'Cigarette inventory tracking' }
   ]);
 
   const [newTileUrl, setNewTileUrl] = useState('');
@@ -54,7 +93,9 @@ export default function ManagerPanel({ onClose }: ManagerPanelProps) {
   const [newTileDescription, setNewTileDescription] = useState('');
 
   const [newEmployeeName, setNewEmployeeName] = useState('');
+  const [newEmployeePhone, setNewEmployeePhone] = useState('');
   const [newEmployeePin, setNewEmployeePin] = useState('');
+  const [newEmployeeNotes, setNewEmployeeNotes] = useState('');
 
   const handleAddCustomTile = () => {
     if (newTileUrl && newTileTitle) {
@@ -78,19 +119,93 @@ export default function ManagerPanel({ onClose }: ManagerPanelProps) {
   };
 
   const handleAddEmployee = () => {
-    if (newEmployeeName && newEmployeePin) {
-      const newEmployee: Employee = {
-        id: Date.now().toString(),
-        name: newEmployeeName,
-        pin: newEmployeePin,
-        role: 'employee',
-        status: 'active'
-      };
-      console.log('Added employee:', newEmployee);
-      setNewEmployeeName('');
-      setNewEmployeePin('');
-      alert(`Employee ${newEmployeeName} added successfully`);
+    // Validation
+    if (!newEmployeeName || !newEmployeePin || !newEmployeePhone) {
+      alert('Please fill in all required fields (Name, Phone, PIN)');
+      return;
     }
+
+    // Validate PIN length
+    if (newEmployeePin.length < 4 || newEmployeePin.length > 6) {
+      alert('PIN must be 4-6 digits');
+      return;
+    }
+
+    // Check if PIN is unique
+    const pinExists = employees.some(emp => emp.pin === newEmployeePin);
+    if (pinExists || newEmployeePin === '786110') {
+      alert('This PIN is already in use. Please choose a different PIN.');
+      return;
+    }
+
+    // Validate phone format (basic)
+    const phoneRegex = /^\(\d{3}\) \d{3}-\d{4}$/;
+    if (!phoneRegex.test(newEmployeePhone) && newEmployeePhone.length > 0) {
+      // Auto-format phone if it's just digits
+      const digitsOnly = newEmployeePhone.replace(/\D/g, '');
+      if (digitsOnly.length === 10) {
+        const formatted = `(${digitsOnly.slice(0,3)}) ${digitsOnly.slice(3,6)}-${digitsOnly.slice(6)}`;
+        setNewEmployeePhone(formatted);
+      }
+    }
+
+    const newEmployee: Employee = {
+      id: Date.now().toString(),
+      name: newEmployeeName,
+      phone: newEmployeePhone,
+      pin: newEmployeePin,
+      role: 'employee',
+      status: 'active',
+      startDate: new Date().toISOString().split('T')[0],
+      notes: newEmployeeNotes,
+      createdBy: 'Manager Sarah',
+      createdAt: new Date().toLocaleString()
+    };
+    
+    setEmployees([...employees, newEmployee]);
+    console.log('Added employee:', newEmployee);
+    
+    // Clear form
+    setNewEmployeeName('');
+    setNewEmployeePhone('');
+    setNewEmployeePin('');
+    setNewEmployeeNotes('');
+    
+    alert(`Employee ${newEmployeeName} added successfully with PIN ${newEmployeePin}`);
+  };
+
+  const handleResetPin = (employeeId: string) => {
+    const newPin = prompt('Enter new 4-6 digit PIN:');
+    if (!newPin) return;
+
+    if (newPin.length < 4 || newPin.length > 6) {
+      alert('PIN must be 4-6 digits');
+      return;
+    }
+
+    // Check if new PIN is unique
+    const pinExists = employees.some(emp => emp.pin === newPin && emp.id !== employeeId);
+    if (pinExists || newPin === '786110') {
+      alert('This PIN is already in use. Please choose a different PIN.');
+      return;
+    }
+
+    setEmployees(employees.map(emp => 
+      emp.id === employeeId 
+        ? { ...emp, pin: newPin }
+        : emp
+    ));
+    
+    const employee = employees.find(emp => emp.id === employeeId);
+    alert(`PIN reset for ${employee?.name}. New PIN: ${newPin}`);
+  };
+
+  const handleToggleStatus = (employeeId: string) => {
+    setEmployees(employees.map(emp => 
+      emp.id === employeeId 
+        ? { ...emp, status: emp.status === 'active' ? 'inactive' : 'active' }
+        : emp
+    ));
   };
 
   const handleScheduleUpload = () => {
@@ -115,10 +230,11 @@ export default function ManagerPanel({ onClose }: ManagerPanelProps) {
 
         <CardContent>
           <Tabs defaultValue="employees" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="employees">Employees</TabsTrigger>
               <TabsTrigger value="tiles">Custom Tiles</TabsTrigger>
               <TabsTrigger value="schedule">Schedule</TabsTrigger>
+              <TabsTrigger value="tasks">Task Management</TabsTrigger>
             </TabsList>
 
             {/* Employee Management */}
@@ -140,7 +256,7 @@ export default function ManagerPanel({ onClose }: ManagerPanelProps) {
                   <CardContent className="space-y-4">
                     <div className="grid grid-cols-2 gap-4">
                       <div>
-                        <Label htmlFor="employee-name">Full Name</Label>
+                        <Label htmlFor="employee-name">Full Name *</Label>
                         <Input
                           id="employee-name"
                           value={newEmployeeName}
@@ -150,13 +266,39 @@ export default function ManagerPanel({ onClose }: ManagerPanelProps) {
                         />
                       </div>
                       <div>
-                        <Label htmlFor="employee-pin">PIN (4-6 digits)</Label>
+                        <Label htmlFor="employee-phone">Phone Number *</Label>
+                        <Input
+                          id="employee-phone"
+                          value={newEmployeePhone}
+                          onChange={(e) => setNewEmployeePhone(e.target.value)}
+                          placeholder="(555) 123-4567"
+                          data-testid="input-employee-phone"
+                        />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="employee-pin">Unique PIN (4-6 digits) *</Label>
                         <Input
                           id="employee-pin"
+                          type="number"
                           value={newEmployeePin}
                           onChange={(e) => setNewEmployeePin(e.target.value)}
                           placeholder="Enter 4-6 digit PIN"
                           data-testid="input-employee-pin"
+                        />
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Must be unique. Cannot use 786110 (manager PIN)
+                        </p>
+                      </div>
+                      <div>
+                        <Label htmlFor="employee-notes">Notes (Optional)</Label>
+                        <Input
+                          id="employee-notes"
+                          value={newEmployeeNotes}
+                          onChange={(e) => setNewEmployeeNotes(e.target.value)}
+                          placeholder="Shift preference, notes, etc."
+                          data-testid="input-employee-notes"
                         />
                       </div>
                     </div>
@@ -172,22 +314,48 @@ export default function ManagerPanel({ onClose }: ManagerPanelProps) {
                   {employees.map((employee) => (
                     <Card key={employee.id}>
                       <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-3">
-                            <div>
-                              <h4 className="font-medium">{employee.name}</h4>
-                              <p className="text-sm text-muted-foreground">PIN: {employee.pin}</p>
+                        <div className="flex items-start justify-between">
+                          <div className="flex items-start gap-3 flex-1">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <h4 className="font-medium">{employee.name}</h4>
+                                <Badge variant={employee.status === 'active' ? 'default' : 'secondary'}>
+                                  {employee.status}
+                                </Badge>
+                              </div>
+                              <div className="grid grid-cols-2 gap-4 text-sm text-muted-foreground">
+                                <div>
+                                  <p><strong>Phone:</strong> {employee.phone}</p>
+                                  <p><strong>PIN:</strong> {employee.pin}</p>
+                                </div>
+                                <div>
+                                  <p><strong>Start Date:</strong> {employee.startDate}</p>
+                                  <p><strong>Added:</strong> {employee.createdAt}</p>
+                                </div>
+                              </div>
+                              {employee.notes && (
+                                <p className="text-sm text-muted-foreground mt-2">
+                                  <strong>Notes:</strong> {employee.notes}
+                                </p>
+                              )}
                             </div>
                           </div>
-                          <div className="flex items-center gap-2">
-                            <Badge variant={employee.status === 'active' ? 'default' : 'secondary'}>
-                              {employee.status}
-                            </Badge>
-                            <Badge variant="outline">
-                              {employee.role}
-                            </Badge>
-                            <Button variant="ghost" size="sm">
-                              <Edit className="w-4 h-4" />
+                          <div className="flex items-center gap-2 ml-4">
+                            <Button 
+                              variant="outline" 
+                              size="sm"
+                              onClick={() => handleResetPin(employee.id)}
+                              title="Reset PIN"
+                            >
+                              Reset PIN
+                            </Button>
+                            <Button 
+                              variant={employee.status === 'active' ? 'secondary' : 'default'}
+                              size="sm"
+                              onClick={() => handleToggleStatus(employee.id)}
+                              title={`${employee.status === 'active' ? 'Deactivate' : 'Activate'} employee`}
+                            >
+                              {employee.status === 'active' ? 'Deactivate' : 'Activate'}
                             </Button>
                           </div>
                         </div>
@@ -323,6 +491,119 @@ export default function ManagerPanel({ onClose }: ManagerPanelProps) {
                       <Calendar className="w-12 h-12 mx-auto mb-4 opacity-50" />
                       <p>No schedule uploaded yet</p>
                       <p className="text-sm">Upload a schedule file to see shift assignments</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+
+            {/* Task Management */}
+            <TabsContent value="tasks" className="space-y-6">
+              <div className="space-y-4">
+                <h3 className="text-lg font-semibold flex items-center gap-2">
+                  <ClipboardList className="w-5 h-5" />
+                  Task Management & Oversight
+                </h3>
+
+                {/* Task Assignment */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Create New Task</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <Label htmlFor="task-title">Task Title</Label>
+                      <Input
+                        id="task-title"
+                        placeholder="e.g., Clean Coffee Station"
+                        data-testid="input-task-title"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="task-description">Description</Label>
+                      <Textarea
+                        id="task-description"
+                        placeholder="Detailed instructions for completing this task"
+                        data-testid="input-task-description"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="task-assignee">Assign To</Label>
+                        <select className="w-full px-3 py-2 border border-input bg-background rounded-md">
+                          <option>Select employee...</option>
+                          <option>Next shift</option>
+                          <option>All employees</option>
+                        </select>
+                      </div>
+                      <div>
+                        <Label htmlFor="task-priority">Priority</Label>
+                        <select className="w-full px-3 py-2 border border-input bg-background rounded-md">
+                          <option>Normal</option>
+                          <option>High</option>
+                          <option>Critical</option>
+                        </select>
+                      </div>
+                    </div>
+                    <Button data-testid="button-create-task">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Create Task
+                    </Button>
+                  </CardContent>
+                </Card>
+
+                {/* Task Status Overview */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Task Status Overview</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-3 gap-4 mb-4">
+                      <div className="text-center p-4 bg-orange-500/10 rounded-lg">
+                        <div className="text-2xl font-bold text-orange-500">3</div>
+                        <div className="text-sm text-muted-foreground">Pending Tasks</div>
+                      </div>
+                      <div className="text-center p-4 bg-blue-500/10 rounded-lg">
+                        <div className="text-2xl font-bold text-blue-500">2</div>
+                        <div className="text-sm text-muted-foreground">In Progress</div>
+                      </div>
+                      <div className="text-center p-4 bg-red-500/10 rounded-lg">
+                        <div className="text-2xl font-bold text-red-500">1</div>
+                        <div className="text-sm text-muted-foreground">Failed Verification</div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Alerts & Notifications */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-base">Recent Alerts</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="flex items-center gap-3 p-3 bg-red-500/10 rounded-lg">
+                      <div className="w-2 h-2 bg-red-500 rounded-full"></div>
+                      <div className="flex-1">
+                        <div className="font-medium text-sm">Freezer Unit #2 Temperature Critical</div>
+                        <div className="text-xs text-muted-foreground">12°F - Move stock to backup storage</div>
+                      </div>
+                      <div className="text-xs text-muted-foreground">2:30 PM</div>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 bg-orange-500/10 rounded-lg">
+                      <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
+                      <div className="flex-1">
+                        <div className="font-medium text-sm">Task Verification Failed</div>
+                        <div className="text-xs text-muted-foreground">Restroom cleaning - requires attention</div>
+                      </div>
+                      <div className="text-xs text-muted-foreground">1:45 PM</div>
+                    </div>
+                    <div className="flex items-center gap-3 p-3 bg-yellow-500/10 rounded-lg">
+                      <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                      <div className="flex-1">
+                        <div className="font-medium text-sm">Beverage Cooler Warning</div>
+                        <div className="text-xs text-muted-foreground">42°F - Temperature rising</div>
+                      </div>
+                      <div className="text-xs text-muted-foreground">1:15 PM</div>
                     </div>
                   </CardContent>
                 </Card>

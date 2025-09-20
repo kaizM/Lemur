@@ -1,0 +1,303 @@
+Got it—and thanks for the clear update. Based on what you reported, here’s a **no-code, fully detailed spec + action plan** to (1) finish your **Manager Panel**, (2) fix the **Temperature Logs** tile behavior, and (3) outline **next steps** so you know exactly what to do from here.
+
+---
+
+# Lemur — Manager Panel (Final Spec) + Temperature Module Fix Plan
+
+## 1) Current status (from your notes)
+
+* ✅ External links work:
+
+  * Lottery → modisoft.com
+  * Cigarette Inventory → luxury-cajeta-636124.netlify.app
+* ✅ Navigation works between sections
+* ✅ Hot-reload works
+* ✅ Role-based auth:
+
+  * **Manager PIN:** 786110 (full admin)
+  * **Employees:** limited access (no schedules)
+* ⚠️ Issue: **Temperature Logs tile** — “click → nothing happens”
+
+---
+
+## 2) Manager Panel — what it should include (no code, exact behavior)
+
+### A. Users & Roles
+
+* **Add/Edit Employee**
+
+  * Fields: Name, Phone, PIN (4–6 digits), Role (employee/manager), Active (on/off).
+  * Only managers can create/disable accounts.
+* **Reset PIN**
+
+  * Manager can reset a forgotten PIN.
+* **Permissions matrix**
+
+  * **Employees:** see only **Lottery**, **Inventory**, **Temperature Logs**, **Tasks**.
+  * **Managers:** see **everything** including **Schedule**, **Admin**, **Custom Tiles**, **Reports**, **Alerts**.
+
+### B. Custom Tiles (Homepage buttons you can add yourself)
+
+* **Create Tile**
+
+  * Fields: Tile name (e.g., “Vendor Orders”), URL, Visibility (All employees / Manager only), Icon (optional).
+  * Save → instantly appears on homepage for those who have access.
+* **Reorder Tiles**
+
+  * Drag-and-drop preferred order (optional nice-to-have).
+* **Hide/Unhide**
+
+  * Manager can temporarily hide a tile without deleting it.
+
+### C. Task Management (with verification)
+
+* **Task templates**
+
+  * Common tasks you reuse (e.g., “Clean countertops,” “Restock water,” “Sweep front”).
+  * Fields: Title, Description, Frequency (once/daily/weekly/rotation-7), Proof required? (note/photo), Due window (e.g., within first hour of shift).
+* **Assign tasks**
+
+  * To a person, a role (cashier), or “anyone on shift.”
+* **Auto carry-forward**
+
+  * If not done, it reappears on next login for that same person or next person on shift (your rule).
+* **Verification (cross-shift)**
+
+  * Next shift sees a **Verify** card for previous shift’s tasks:
+
+    * Yes → task closes as **Verified** (with verifier name & timestamp).
+    * No → task becomes **Flagged**; manager sees an alert.
+* **Audit trail**
+
+  * Every change stored: who acknowledged, who verified, times, notes, flags.
+
+### D. Temperature Logs (coolers & freezers)
+
+* **Units**
+
+  * Manager defines each unit once (e.g., **Freezer-1**, **Cooler-Front**, **Ice-Cream-Box**).
+* **Check schedule**
+
+  * Default: **every 3 hours** per unit.
+  * When an employee opens Temperature Logs:
+
+    * Sees all units with last reading time and **Next Due** time.
+* **Ranges & Status**
+
+  * Editable bands (your defaults):
+
+    * **≤35°F** → “Very Chill/OK”
+    * **>35–40°F** → “Normal”
+    * **>40–45°F** → “Watch”
+    * **>45°F** → “Alert”
+* **Escalation rules**
+
+  * Any reading **≥50°F**:
+
+    * Next check interval **shortens to 20 minutes** (until 2 consecutive readings are back below 45°F).
+  * **Two consecutive readings ≥50°F**:
+
+    * Trigger **Critical Alert**: “Move stock to backup cooler/freezer now.”
+    * Stays visible until manager marks **Resolved**.
+* **Alert Center (manager)**
+
+  * Shows open alerts, unit, times, the last 3 readings trend, who took them.
+  * Actions: Acknowledge, Add note (e.g., “Tech called”), Mark Resolved.
+* **Compliance view**
+
+  * Calendar/list view of on-time vs late/missed checks.
+
+### E. Schedule (Manager-only)
+
+* **Upload schedule**
+
+  * Upload an Excel/CSV export with columns: `name, pin, date (YYYY-MM-DD), start (HH:MM), end (HH:MM)`.
+  * Employees **cannot** see schedules inside Lemur.
+* **Use of schedule**
+
+  * Helps the system know who to ask for verification next.
+  * Helps reports show “coverage gaps” (optional).
+
+### F. Messaging & Announcements (optional but useful)
+
+* **One-way bulletin**
+
+  * Manager posts a message (e.g., “State inspection Tuesday 10am”).
+  * Appears as a banner on the employee homepage for 24–72 hours.
+* **Targeting**
+
+  * All employees, a specific shift, or a specific person.
+
+### G. Reports (manager)
+
+* **Tasks report**
+
+  * Completed on time, late, missed, flagged, by person or date range.
+* **Temperature report**
+
+  * All readings, escalations, critical alerts, resolution times.
+* **User activity**
+
+  * Logins, acknowledgements, verifications, custom tile usage (click counts).
+* **Export**
+
+  * CSV exports for audits or insurance.
+
+### H. Branding & Theme
+
+* **Brand**
+
+  * “Lemur” title stays pinned at top.
+* **Theme**
+
+  * Light/Dark toggle (manager sets default).
+* **Kiosk mode**
+
+  * Full-screen, big buttons for front-counter PC.
+
+### I. Security/Policy
+
+* **Manager access**
+
+  * PIN **786110** with second prompt “Are you Manager?” to avoid accidental elevation.
+* **Lock after idle**
+
+  * Auto-logout after X minutes of inactivity (manager configurable).
+* **PII**
+
+  * Only store minimum needed (name, phone, PIN).
+
+---
+
+## 3) Temperature Logs tile: why “nothing happens” & how to fix (no code, exact checks)
+
+Use this **checklist** to pinpoint the issue:
+
+1. **Tile target configured?**
+
+   * The Temperature tile must point to the **Temperature Logs page**.
+   * If it’s pointing to a blank/placeholder, clicking will appear to do nothing.
+
+2. **Permissions/visibility**
+
+   * Confirm employees **are allowed** to view Temperature Logs in the role settings.
+   * If the page is marked “manager-only,” employees will see the tile but it won’t open.
+
+3. **Units not set**
+
+   * If there are **no temperature units** defined yet, some apps render an empty page.
+   * Add at least: **Freezer-1**, **Cooler-Front**, **Ice-Cream-Box**.
+
+4. **Intervals not set**
+
+   * Ensure the default interval (3h) exists in settings. Missing intervals can block the UI.
+
+5. **Form validation**
+
+   * If the temperature form requires a value and you open it without a unit selected, the page may appear frozen.
+   * Try entering a test reading (e.g., 34°F) once units are present.
+
+6. **Alerts page blocking**
+
+   * If there’s an **unresolved critical alert**, some UIs show the alert first and hide the logger behind a tab.
+   * Check the **Alerts** tab and close/resume.
+
+7. **Cache/hot reload artifact**
+
+   * Since you have hot-module replacement: do a **hard refresh** of the browser (or open in a private window).
+   * If using a dev server, stop → start once to clear any stale route maps.
+
+8. **Role test**
+
+   * Test with **employee PIN** and with **manager PIN 786110** to see if behavior changes.
+   * If it works for manager but not employee, it’s permissions.
+
+9. **Minimum data sanity**
+
+   * Create **one dummy reading** for each unit (e.g., 34°F) to force the UI to render history/state.
+
+> **Acceptance test for Temperature Logs**
+>
+> * From employee account:
+>
+>   * Open Temperature Logs → see **three units** listed with “Next Due” times.
+>   * Enter `34°F` for one unit → status shows “Very Chill/OK”.
+>   * Enter `51°F` next → UI shortens next due to **20 minutes** and shows **Watch/Alert** state according to your bands.
+>   * Enter `52°F` again → **Critical Alert** appears with instruction to move stock.
+
+---
+
+## 4) Next-step setup checklist (manager)
+
+### A. Data you should prepare (once)
+
+* **Employee list:** name, phone, PIN (unique).
+* **Temperature units:** names you actually use in store.
+* **Task templates:** 10–15 common tasks with frequencies.
+* **Escalation notes:** your exact actions when temperatures are high (who to call, where to move product).
+* **External links:** Modisoft, LRTRI (done), plus any vendor/training portals you want as tiles.
+* **Schedule file:** weekly roster CSV (optional for now).
+
+### B. Configure Manager Panel (order of operations)
+
+1. **Confirm manager PIN:** 786110.
+2. **Add temperature units:** Freezer-1, Cooler-Front, Ice-Cream-Box.
+3. **Set temperature bands & intervals:** confirm defaults are as you want.
+4. **Create task templates:**
+
+   * Cleaning (countertops, pumps area), stocking, bathrooms, trash, floor, etc.
+   * Set proof required for sensitive tasks (bathrooms/food areas).
+5. **Set cross-shift verification:** ON (required).
+6. **Add custom tiles:** any extra portals you want (copy/paste URLs).
+7. **Upload schedule:** manager-only; verify employees cannot see it.
+8. **Post a bulletin:** e.g., “Use Lemur for temps every 3 hours. Missed checks will alert manager.”
+
+### C. Dry-run with 2 test users
+
+* **Employee A** logs in → sees 4 tiles only.
+* Completes a task with a note.
+* Records a normal temp and then a high temp to trigger escalation.
+* **Employee B** on “next shift” logs in → sees **Verify** card for Employee A’s work.
+* **Manager** reviews Alerts and marks one resolved.
+
+---
+
+## 5) Feature roadmap (prioritized, no code)
+
+**High priority**
+
+* Alerts center polish (filter by “Open/Critical/Resolved”).
+* Task SLA timers (e.g., due within 60 minutes of shift start).
+* Photo proof limit (max 1–2 photos per task to keep storage tidy).
+
+**Medium**
+
+* One-way notifications popup for employees on login (short, actionable).
+* Export CSV for Tasks and Temps.
+
+**Later**
+
+* SMS/email notifications (when a critical alert fires or task is overdue).
+* Simple analytics (weekly completion rates, top performers).
+* Optional camera/OCR integration (if you choose to go that direction later).
+
+---
+
+## 6) What “done” looks like (manager sign-off)
+
+* **Employees** (any PIN except 786110):
+
+  * Can open **Lottery**, **Inventory**, **Temperature Logs**, **Tasks** only.
+  * Can record temps; escalations behave as specified.
+  * Can complete tasks; next shift sees **Verify**.
+
+* **Manager** (PIN **786110**):
+
+  * Can add users, custom tiles, task templates.
+  * Can upload/view schedules (employees cannot).
+  * Can see Alerts & Reports.
+  * Can resolve alerts and view full audit trail.
+
+---
+
+If you want, I can turn this into a **one-pager SOP** for your team (“How to use Lemur per shift”), and a **manager’s checklist** for opening/closing.

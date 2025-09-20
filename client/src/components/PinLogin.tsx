@@ -27,7 +27,7 @@ export default function PinLogin({ onLogin }: PinLoginProps) {
       // Simulate login process
       setTimeout(() => {
         // Mock authentication - in real app this would be API call
-        const role = pin === '0000' ? 'manager' : 'employee';
+        const role = pin === '786110' ? 'manager' : 'employee';
         onLogin(pin, role);
         setIsLoading(false);
       }, 500);
@@ -105,7 +105,7 @@ export default function PinLogin({ onLogin }: PinLoginProps) {
           </div>
 
           <div className="text-center text-sm text-muted-foreground">
-            <p>Manager PIN: 0000 | Employee PIN: Any 4+ digits</p>
+            <p>Manager PIN: 786110 | Employee PIN: Any 4+ digits</p>
           </div>
         </CardContent>
       </Card>
